@@ -5,18 +5,15 @@ require("dotenv").config();
 
 const app = express();
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URL, {
-      dbName: "Job",
-    });
-    console.log("Connect to MongoDB successfully");
-  } catch (error) {
-    console.log("Connect failed " + error.message);
-  }
-};
-
-connectDB();
+mongoose.connect(process.env.MONGODB_URL).then(() => {
+  console.log("Mongodb connected");
+  app.listen(5000, () => {
+    console.log(`Server is listening on port ${5000}`);
+  });
+}).catch((err) => {
+  console.log({ err });
+  process.exit(1);
+});
 
 app.get("/", async (req, res) => {
   const jobs = await Job.find({});
@@ -24,6 +21,6 @@ app.get("/", async (req, res) => {
   res.json({jobs});
 });
 
-app.listen(5000, () => {
-  console.log("Server started on port 5000");
-});
+// app.listen(5000, () => {
+//   console.log("Server started on port 5000");
+// });
